@@ -18,19 +18,21 @@ with open("dijkstraData.txt", 'r') as file:
             edgelist.append(edge)
         x.append(edgelist)
         
-def dijkstra(graph, start, distances={}, visited={}, candidates=[]):
-    visited[start] = 1
+def dijkstra(graph, start):
+    distances, visited, candidates = {}, set(), [] 
+    visited.add(start)
     distances[start] = 0
     for neighbor in graph[start]:
-        heapq.heappush(candidates, neighbor)
+        heapq.heappush(candidates, neighbor) #candidates becomes a heap to track which node is best to explore next
     while candidates != []:
-        exploredVertex = heapq.heappop(candidates)
-        if exploredVertex[1] not in visited:
-            visited[exploredVertex[1]] = 1
-            distances[exploredVertex[1]] = exploredVertex[0]
-            for neighbor in graph[exploredVertex[1]]:
+        explored = heapq.heappop(candidates)
+        node, distance = explored[1], explored[0]
+        if node not in visited:
+            visited.add(node)
+            distances[node] = distance
+            for neighbor in graph[node]:
                 if neighbor[1] not in visited:
-                    candidateDistance = exploredVertex[0] + neighbor[0]
+                    candidateDistance = distance + neighbor[0]
                     candidate = [candidateDistance, neighbor[1]]
                     heapq.heappush(candidates, candidate)
     return distances
